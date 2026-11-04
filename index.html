@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Self Check Anxiety GAD-7</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f6fa;color:#222;margin:0;padding:20px}
+main{max-width:650px;margin:auto}
+h1{color:#234f9d}
+.card{background:white;padding:18px;border-radius:14px;margin:15px 0}
+.q{padding:15px 0;border-bottom:1px solid #ddd}
+label{display:block;padding:9px;margin:5px 0;background:#f5f7fa;border-radius:8px}
+input{margin-right:9px}
+button{width:100%;padding:14px;background:#234f9d;color:white;border:0;border-radius:9px;font-size:16px}
+button:disabled{background:#aaa}
+#hasil{display:none}
+.score{font-size:42px;font-weight:bold;color:#234f9d}
+small{color:#666;line-height:1.5}
+</style>
+</head>
+<body>
+<main>
+<h1>Self Check Anxiety</h1>
+<p><b>GAD-7 – Tes Kecemasan</b></p>
+<p>Jawab 7 pertanyaan berikut berdasarkan kondisi selama 2 minggu terakhir.</p>
+
+<div class="card">
+<form id="tes">
+<div id="pertanyaan"></div>
+<button id="btn" disabled>Lihat Hasil</button>
+</form>
+</div>
+
+<div class="card" id="hasil">
+<h2>Hasil Tes Kamu</h2>
+<div class="score" id="skor"></div>
+<h3 id="kategori"></h3>
+<p id="keterangan"></p>
+<hr>
+<p><b>Interpretasi skor:</b></p>
+<p>0–4: Minimal<br>
+5–9: Ringan<br>
+10–14: Sedang<br>
+15–21: Berat</p>
+<button onclick="ulang()">Ulangi Tes</button>
+</div>
+
+<div class="card">
+<small>GAD-7 adalah alat skrining awal, bukan diagnosis medis. Hasil dapat menjadi bahan diskusi dengan tenaga profesional.</small>
+</div>
+</main>
+
+<script>
+const soal=[
+"Merasa gugup, cemas, atau tegang?",
+"Tidak mampu menghentikan atau mengendalikan rasa khawatir?",
+"Terlalu banyak mengkhawatirkan berbagai hal?",
+"Kesulitan untuk merasa rileks atau santai?",
+"Merasa sangat gelisah sehingga sulit duduk diam?",
+"Mudah merasa kesal atau tersinggung?",
+"Merasa takut seolah-olah sesuatu yang buruk akan terjadi?"
+];
+
+const jawaban=[
+"Tidak pernah",
+"Beberapa hari",
+"Lebih dari separuh hari",
+"Hampir setiap hari"
+];
+
+const area=document.getElementById("pertanyaan");
+
+soal.forEach((s,i)=>{
+ let d=document.createElement("div");
+ d.className="q";
+ d.innerHTML="<b>"+(i+1)+". "+s+"</b>";
+ jawaban.forEach((j,n)=>{
+  d.innerHTML+=`<label><input type="radio" name="q${i}" value="${n}">${j}</label>`;
+ });
+ area.appendChild(d);
+});
+
+document.getElementById("tes").addEventListener("change",()=>{
+ let terjawab=0;
+ soal.forEach((s,i)=>{
+  if(document.querySelector('input[name="q'+i+'"]:checked')) terjawab++;
+ });
+ document.getElementById("btn").disabled=terjawab!==7;
+});
+
+document.getElementById("tes").addEventListener("submit",e=>{
+ e.preventDefault();
+ let total=0;
+ soal.forEach((s,i)=>{
+  total+=Number(document.querySelector('input[name="q'+i+'"]:checked').value);
+ });
+
+ let kat,ket;
+ if(total<=4){kat="Minimal";ket="Gejala kecemasan minimal."}
+ else if(total<=9){kat="Ringan";ket="Gejala kecemasan ringan."}
+ else if(total<=14){kat="Sedang";ket="Gejala kecemasan sedang."}
+ else{kat="Berat";ket="Gejala kecemasan berat."}
+
+ document.getElementById("skor").textContent=total+"/21";
+ document.getElementById("kategori").textContent=kat;
+ document.getElementById("keterangan").textContent=ket;
+ document.getElementById("hasil").style.display="block";
+ document.getElementById("hasil").scrollIntoView({behavior:"smooth"});
+});
+
+function ulang(){
+ document.getElementById("tes").reset();
+ document.getElementById("hasil").style.display="none";
+ document.getElementById("btn").disabled=true;
+ window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
