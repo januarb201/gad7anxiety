@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cek Level Brain Rot 😂</title>
+<style>
+:root{--bg:#10131b;--panel:#1b2130;--panel2:#242c3e;--ink:#f5f7fb;--muted:#aeb8ca;--accent:#ffd166;--accent2:#7bdff2;--line:#343e53}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#25304a 0,#10131b 48%);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{width:min(760px,100%);margin:auto;padding:26px 18px 60px}
+header{text-align:center;padding:22px 8px 18px}
+.kicker{color:var(--accent);font-size:.78rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+h1{font-size:clamp(2rem,7vw,3.4rem);line-height:1.05;margin:12px 0}
+header p{color:var(--muted);max-width:580px;margin:12px auto}
+.card{background:rgba(27,33,48,.96);border:1px solid var(--line);border-radius:20px;padding:22px;margin:16px 0;box-shadow:0 14px 38px #0003}
+.note{border-left:4px solid var(--accent);padding:12px 14px;background:#ffffff08;border-radius:8px;color:#dbe2ef}
+.progress-wrap{height:8px;background:#30394c;border-radius:99px;overflow:hidden;margin:10px 0 20px}
+#progress{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .2s}
+.topline{display:flex;justify-content:space-between;color:var(--muted);font-size:.88rem}
+h2{font-size:1.35rem;margin:0 0 8px}
+.question{font-size:1.12rem;font-weight:700;margin:10px 0 18px}
+.answers{display:grid;gap:10px}
+.answer{display:flex;align-items:center;gap:12px;text-align:left;width:100%;border:1px solid var(--line);border-radius:13px;padding:13px 14px;background:var(--panel2);color:var(--ink);font:inherit;cursor:pointer;transition:.15s}
+.answer:hover{border-color:var(--accent);transform:translateY(-1px)}
+.answer.selected{border-color:var(--accent);background:#51452b}
+.dot{height:18px;width:18px;flex:0 0 18px;border:2px solid #8290a8;border-radius:50%}
+.selected .dot{border:5px solid var(--accent)}
+.actions{display:flex;gap:10px;justify-content:space-between;margin-top:20px;flex-wrap:wrap}
+button.primary,button.secondary{border:0;border-radius:12px;padding:12px 18px;font:700 1rem inherit;cursor:pointer}
+button.primary{background:var(--accent);color:#211b0c}
+button.secondary{background:#30394c;color:var(--ink)}
+button:disabled{opacity:.35;cursor:not-allowed}
+.hidden{display:none!important}
+.small{font-size:.88rem;color:var(--muted)}
+.result-score{font-size:3.3rem;font-weight:900;line-height:1;color:var(--accent);margin:12px 0}
+.level{font-size:1.5rem;font-weight:850;margin:8px 0}
+.meter{height:14px;background:#30394c;border-radius:99px;overflow:hidden;margin:16px 0}
+.meter span{display:block;height:100%;background:linear-gradient(90deg,#7bdff2,#ffd166,#ff8066);width:0}
+.breakdown{display:grid;gap:12px;margin-top:18px}
+.barrow{display:grid;grid-template-columns:125px 1fr 42px;gap:10px;align-items:center;font-size:.9rem}
+.bar{height:9px;background:#30394c;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent2)}
+footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:22px}
+@media(max-width:480px){.card{padding:17px}.barrow{grid-template-columns:100px 1fr 34px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="kicker">Tes iseng, introspeksi serius 😂</div>
+  <h1>CEK LEVEL<br>BRAIN ROT</h1>
+  <p>Makanya kok jarang yang baca tulisanku meski panjang dan lucu. Jangan-jangan… 😂</p>
+</header>
+
+<section id="intro" class="card">
+  <h2>Seberapa kuat otakmu menghadapi konten panjang?</h2>
+  <p>Jawab sesuai kebiasaanmu dalam <b>30 hari terakhir</b>. Ada 25 pertanyaan, sekitar 3–5 menit.</p>
+  <div class="note"><b>Catatan:</b> Ini kuis refleksi ringan, bukan tes klinis atau diagnosis medis. Istilah “brain rot” dipakai secara populer untuk menggambarkan pola konsumsi konten dan kebiasaan perhatian.</div>
+  <p class="small">Pilih jawaban yang paling mendekati dirimu. Jujur ya. Yang dinilai kebiasaan, bukan harga diri. 😁</p>
+  <button class="primary" id="start">MULAI CEK 😂</button>
+</section>
+
+<section id="quiz" class="card hidden">
+  <div class="topline"><span id="category">Konsentrasi</span><span id="counter">1 / 25</span></div>
+  <div class="progress-wrap"><div id="progress"></div></div>
+  <div class="question" id="question"></div>
+  <div class="answers" id="answers"></div>
+  <div class="actions">
+    <button class="secondary" id="back">← Kembali</button>
+    <button class="primary" id="next" disabled>Lanjut →</button>
+  </div>
+</section>
+
+<section id="result" class="card hidden">
+  <div class="kicker">Hasil refleksi kamu</div>
+  <div class="result-score"><span id="score">0</span><small style="font-size:1rem;color:var(--muted)"> / 75</small></div>
+  <div class="level" id="level"></div>
+  <p id="description"></p>
+  <div class="meter"><span id="totalbar"></span></div>
+  <h2>Rincian per area</h2>
+  <div class="breakdown" id="breakdown"></div>
+  <div class="note" style="margin-top:20px" id="suggestion"></div>
+  <div class="actions">
+    <button class="secondary" id="retry">Ulangi tes</button>
+    <button class="primary" id="share">Salin hasil</button>
+  </div>
+  <p class="small" id="copied" aria-live="polite"></p>
+</section>
+<footer>Gunakan hasilnya buat bercermin, bukan buat menghakimi orang. 😉</footer>
+</main>
+<script>
+const questions = [
+["Konsentrasi","Saat membaca tulisan panjang, aku sering ingin berhenti sebelum selesai."],
+["Konsentrasi","Aku sulit bertahan membaca buku atau artikel tanpa membuka aplikasi lain."],
+["Konsentrasi","Saat menonton video atau mendengarkan penjelasan, perhatianku cepat pindah."],
+["Konsentrasi","Aku sering mengecek HP di tengah pekerjaan atau percakapan."],
+["Konsentrasi","Aku merasa gelisah ketika harus fokus pada satu hal cukup lama."],
+["Berpikir mendalam","Aku cepat kehilangan kesabaran saat menghadapi penjelasan yang rumit."],
+["Berpikir mendalam","Aku lebih suka jawaban instan daripada menelusuri alasan dan prosesnya."],
+["Berpikir mendalam","Aku sering membagikan informasi sebelum memeriksa sumbernya."],
+["Berpikir mendalam","Aku kesulitan mengikuti argumen yang terdiri dari beberapa tahap."],
+["Berpikir mendalam","Aku jarang membedakan fakta, opini, dan asumsi saat membaca."],
+["Emosi","Aku mudah bosan ketika tidak ada hiburan atau rangsangan dari layar."],
+["Emosi","Mood-ku gampang berubah setelah melihat konten media sosial."],
+["Emosi","Aku mudah kesal ketika harus menunggu tanpa membuka HP."],
+["Emosi","Aku sering membandingkan hidupku dengan kehidupan orang di media sosial."],
+["Emosi","Aku merasa perlu terus mencari konten baru agar tidak merasa kosong atau bosan."],
+["Kebiasaan digital","Tanganku refleks membuka HP setiap ada waktu kosong."],
+["Kebiasaan digital","Aku sering scrolling lebih lama dari yang kurencanakan."],
+["Kebiasaan digital","Aku menonton banyak konten, tetapi sulit mengingat isinya."],
+["Kebiasaan digital","Aku menunda tidur karena terus melihat konten."],
+["Kebiasaan digital","Aku sulit menikmati waktu senggang tanpa layar."],
+["Bahasa & komunikasi","Aku kesulitan menjelaskan pemikiran secara runtut."],
+["Bahasa & komunikasi","Aku lebih sering memakai slogan atau potongan kalimat daripada menjelaskan alasan."],
+["Bahasa & komunikasi","Aku kehilangan minat mengikuti diskusi yang membutuhkan pemikiran panjang."],
+["Bahasa & komunikasi","Aku sering mengulang pendapat yang ramai tanpa benar-benar memikirkannya."],
+["Bahasa & komunikasi","Aku cepat ingin menyela atau memberi respons sebelum orang selesai menjelaskan."]
+];
+const options = [
+["Hampir tidak pernah",0],
+["Kadang-kadang",1],
+["Sering",2],
+["Hampir selalu",3]
+];
+let answers = Array(questions.length).fill(null), index = 0;
+const $ = id => document.getElementById(id);
+function show(id){["intro","quiz","result"].forEach(x=>$(x).classList.toggle("hidden",x!==id))}
+function render(){
+ const [cat,q]=questions[index];
+ $("category").textContent=cat;
+ $("counter").textContent=`${index+1} / ${questions.length}`;
+ $("question").textContent=q;
+ $("progress").style.width=`${index/questions.length*100}%`;
+ $("answers").innerHTML="";
+ options.forEach(([label,value])=>{
+   const b=document.createElement("button");
+   b.className="answer"+(answers[index]===value?" selected":"");
+   b.innerHTML=`<span class="dot"></span><span>${label}</span>`;
+   b.onclick=()=>{answers[index]=value;render()};
+   $("answers").appendChild(b);
+ });
+ $("back").disabled=index===0;
+ $("next").disabled=answers[index]===null;
+ $("next").textContent=index===questions.length-1?"LIHAT HASIL 😂":"Lanjut →";
+}
+function finish(){
+ const total=answers.reduce((a,b)=>a+b,0);
+ const pct=Math.round(total/75*100);
+ let level,desc,suggest;
+ if(total<=14){level="Kepala masih adem 🌱";desc="Kebiasaan yang kamu laporkan menunjukkan perhatian dan ruang berpikir yang relatif terjaga. Pertahankan kebiasaan membaca, fokus, dan memberi jeda pada layar.";suggest="Tantangan kecil: tetap luangkan waktu untuk membaca sesuatu yang panjang dan menikmati 30 menit tanpa notifikasi."}
+ else if(total<=32){level="Mulai kena cipratan 📱";desc="Ada beberapa kebiasaan digital yang mulai mengganggu fokus. Masih ada ruang untuk mengatur ulang ritme konsumsi konten.";suggest="Coba satu sesi 20–30 menit tanpa notifikasi setiap hari. Pilih satu bacaan sampai selesai sebelum pindah ke konten lain."}
+ else if(total<=50){level="Scroll mulai menguasai 🤳";desc="Jawabanmu menunjukkan cukup banyak kebiasaan yang bisa menggerus perhatian dan kesabaran berpikir. Saatnya mengamati pola digital sehari-hari.";suggest="Kurangi pemicu scrolling: matikan notifikasi yang tidak penting, pasang batas waktu aplikasi, dan sisihkan waktu untuk membaca tanpa berpindah-pindah."}
+ else if(total<=65){level="Brain rot alert! 🚨";desc="Banyak jawabanmu menunjukkan pola konsumsi konten yang berpotensi mengganggu fokus, tidur, dan kedalaman berpikir. Mulai dari perubahan kecil yang konsisten.";suggest="Coba jeda layar sebelum tidur, jauhkan HP saat bekerja, dan latih fokus dengan satu kegiatan selama 15–30 menit."}
+ else{level="Raja/Ratu Scroll 👑";desc="Skormu tinggi pada kebiasaan yang sedang kita ukur. Anggap ini alarm untuk mengecek ulang hubunganmu dengan layar dan rutinitas harian.";suggest="Mulai sederhana: pilih satu waktu bebas layar setiap hari, rapikan notifikasi, dan cari bantuan profesional bila masalah fokus, tidur, atau aktivitas harian terasa berat dan menetap."}
+ $("score").textContent=total;
+ $("level").textContent=level;
+ $("description").textContent=desc;
+ $("totalbar").style.width=pct+"%";
+ const cats=["Konsentrasi","Berpikir mendalam","Emosi","Kebiasaan digital","Bahasa & komunikasi"];
+ $("breakdown").innerHTML="";
+ cats.forEach((cat,i)=>{
+   const vals=questions.map((q,j)=>q[0]===cat?answers[j]:null).filter(v=>v!==null);
+   const sum=vals.reduce((a,b)=>a+b,0), max=vals.length*3;
+   const row=document.createElement("div");row.className="barrow";
+   row.innerHTML=`<span>${cat}</span><span class="bar"><i style="width:${sum/max*100}%"></i></span><b>${sum}/${max}</b>`;
+   $("breakdown").appendChild(row);
+ });
+ $("suggestion").textContent=suggest;
+ window.resultText=`Hasil Cek Level Brain Rot 😂\nSkor: ${total}/75\nLevel: ${level}\n${desc}\n\nIni kuis refleksi ringan, bukan diagnosis medis.`;
+ show("result");
+}
+$("start").onclick=()=>{index=0;show("quiz");render()};
+$("back").onclick=()=>{if(index>0){index--;render()}};
+$("next").onclick=()=>{if(answers[index]===null)return;if(index<questions.length-1){index++;render()}else finish()};
+$("retry").onclick=()=>{answers=Array(questions.length).fill(null);index=0;show("intro")};
+$("share").onclick=async()=>{try{await navigator.clipboard.writeText(window.resultText);$("copied").textContent="Hasil berhasil disalin. Tinggal tempel di Threads/X 😂"}catch(e){$("copied").textContent=window.resultText}};
+</script>
+</body>
+</html>
